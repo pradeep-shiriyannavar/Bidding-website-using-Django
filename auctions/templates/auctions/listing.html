@@ -1,0 +1,111 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<div class="layout">
+<div class="left">
+    <div>
+        <h3>{{ listing.title }}</h3>
+    </div>
+
+    {% if user.is_authenticated %}
+
+        {% if user == listing.user and listing.is_active %}
+            <div class="no-bids">
+                <form action="{% url 'close_auction' listing.id %}">
+                    <input class="btn btn-danger" type="submit" name="close" value="Close Auction">
+                </form>
+            </div>
+        {% endif %}
+
+        {% if not watchlisted %}
+            <div class="no-bids">
+                <form action="{% url 'watchlist' listing.id %}" method="post">
+                    {% csrf_token %}
+                    <input class="btn btn-success" type="submit" name="addwatchlist" value="Add to watchlist">
+                </form>
+            </div>
+
+        {% else %}
+            <div class="no-bids">
+                <form action="{% url 'watchlist' listing.id %}" method="post">
+                    {% csrf_token %}
+                    <input class="btn btn-secondary" type="submit" name="removewatchlist" value="Remove from watchlist">
+                </form>
+            </div>
+        {% endif %}
+    {% endif %}
+
+    <div>
+        <img src="{{ listing.image_url }}" alt="{{ listing.title }}" width="400px">
+    </div>
+
+    <div>
+        <p>{{ listing.description }}</p>
+    </div>
+
+    {% if listing.is_active %}
+        <div class="active-bid">
+            <div>
+                <h5>
+                    Rs:{{ listing.current_bid }}
+                </h5>
+            </div>
+
+            <div class="no-bids">
+                {{ number_of_bids }} bid(s) so far.
+            </div>
+
+            {% if user.is_authenticated %}
+                <div>
+                    <form action="{% url 'listing' listing.id %}" method="post">
+                        {% csrf_token %}
+                        <div class="input-group">
+                            <input type="number" step="any" min="{{ listing.current_bid }}" name="new_bid"
+                                   class="form-control"
+                                   aria-label="Amount">
+                            <div class="input-group-append">
+                                <span class="input-group-text">₹</span>
+                            </div>
+                        </div>
+                        <input class="btn btn-primary" type="submit" value="Place Bid">
+                    </form>
+                    <div>
+                        {% if error_bid %}
+                            <p>{{ error_bid }}</p>
+                        {% elif success_bid %}
+                            <p>{{ success_bid }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+            {% else %}
+                <div>
+                    Please login to place a bid.
+                </div>
+            {% endif %}
+        </div>
+    {% else %}
+        <div>
+            <h3>This auction is closed.</h3>
+            <h2 style="color: rgb(231, 6, 160);">Auction Winner : {{ listing.user }}</h2>
+        </div>
+    {% endif %}
+</div>
+</div>
+<div class="right">
+    <div class="listing-view-detail">
+        <br>
+        <br>
+        <h3><u>Details</u></h3>
+        <ul>
+            <li style="font-size: 22px;">Listed by: {{ listing.user }}</li>
+            <li style="font-size: 22px;">Created: {{ listing.created }}</li>
+            <li style="font-size: 22px;">Category: {{ listing.category }}</li>
+            <li style="font-size: 22px;">End Time: {{ listing.endtime }}</li>
+
+        </ul>
+    </div>   
+</div>
+</div>
+
+{% endblock %}
