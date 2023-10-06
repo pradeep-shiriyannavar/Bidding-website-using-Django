@@ -22,4 +22,4 @@ python manage.py runserver
 ```
 
 # Demo Video:
-[VIEW DEMO]: (https://youtu.be/I7joS5hkq3s?si=F0ViPlW8nDvMYfds)
+(https://youtu.be/I7joS5hkq3s?si=F0ViPlW8nDvMYfds)
