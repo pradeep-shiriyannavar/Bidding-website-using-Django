@@ -5,7 +5,6 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django import forms
-from django.core import serializers
 
 from .models import User, Listing, Bid, Comment, Category,EndTime
 
